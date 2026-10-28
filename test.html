@@ -756,6 +756,8 @@
 .figpop { width: clamp(260px, 26vw, 340px); max-height: calc(100vh - 24px); overflow: hidden; padding: clamp(10px, 1.8vh, 16px) clamp(12px, 1.4vw, 18px); }
 .figpop h3 { font-size: clamp(18px, 2.8vh, 22px); }
 .figpop p { font-size: clamp(12.5px, 1.9vh, 14.5px); }
+@media (max-height: 760px) { body.at-home .buildvase { opacity: 0; pointer-events: none; } }
+.buildvase { transition: opacity .25s ease; }
 .svg-off, .svg-off * { animation-play-state: paused !important; }
 
 .sim { display: grid; gap: 10px; align-items: center; margin-top: .8rem; }
@@ -807,10 +809,10 @@
   - Tempi: i minuti di ogni sezione sono nella barra colorata in testata (variabile PLAN nello script).
   - Colori: sono le variabili --c1 ... --c7 all'inizio del CSS.
 -->
-<nav class="nav" aria-label="Sezioni"><div class="wrap navin"><ol id="navlist"><li><a class="c1" href="#s1" title="Tasto 1">01 Intro</a></li><li><a class="c2" href="#s2" title="Tasto 2">02 Storia</a></li><li><a class="c3" href="#s3" title="Tasto 3">03 Tecniche</a></li><li><a class="c4" href="#s4" title="Tasto 4">04 Materiali</a></li><li><a class="c5" href="#s5" title="Tasto 5">05 Applicazioni</a></li></ol><button type="button" class="tt" id="tt" aria-label="Passa a tema scuro" title="Tema chiaro / scuro"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="i-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g><path class="i-moon" d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></button></div><div class="progress" id="progress" aria-hidden="true"></div></nav>
+<nav class="nav" aria-label="Sezioni"><div class="wrap navin"><ol id="navlist"><li><a class="c1" href="#s0" title="Tasto 0">00 Home</a></li><li><a class="c1" href="#s1" title="Tasto 1">01 Intro</a></li><li><a class="c2" href="#s2" title="Tasto 2">02 Storia</a></li><li><a class="c3" href="#s3" title="Tasto 3">03 Tecniche</a></li><li><a class="c4" href="#s4" title="Tasto 4">04 Materiali</a></li><li><a class="c5" href="#s5" title="Tasto 5">05 Applicazioni</a></li></ol><button type="button" class="tt" id="tt" aria-label="Passa a tema scuro" title="Tema chiaro / scuro"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="i-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g><path class="i-moon" d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></button></div><div class="progress" id="progress" aria-hidden="true"></div></nav>
 
 <!-- ================= TESTATA ================= -->
-<header class="hero">
+<header class="hero" id="s0">
   <div class="wrap hero-top"><p class="uopi" aria-label="UOPI al quadrato">UOPI<sup>2</sup></p></div>
   <div class="wrap hero-grid">
     <div>
@@ -1204,15 +1206,35 @@
 
   document.addEventListener("click", function (e) { if (!e.target.closest(".src")) Array.prototype.forEach.call(document.querySelectorAll(".src.open"), function (o) { o.classList.remove("open"); }); });
 
-  /* ---------- Tasti 1-6: vai alla sezione ---------- */
+    /* voce attiva nel menu: segue lo scroll (00 Home finche' sei nella prima pagina) */
+  (function () {
+    var ids = ["s0", "s1", "s2", "s3", "s4", "s5"], nl = Array.prototype.slice.call(document.querySelectorAll("#navlist a")), last = null, tk = false;
+    function upd() {
+      tk = false;
+      var vh = window.innerHeight, cur = "s0";
+      for (var i = 0; i < ids.length; i++) { var el = document.getElementById(ids[i]); if (el && el.getBoundingClientRect().top <= vh * 0.4) cur = ids[i]; }
+      if (window.scrollY + vh >= document.documentElement.scrollHeight - 4) cur = "s5";
+      if (window.scrollY < 8) cur = "s0";
+      document.body.classList.toggle("at-home", cur === "s0");
+      last = cur;
+      nl.forEach(function (a) { if (a.getAttribute("href") === "#" + cur) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); });
+      var c = document.querySelector('#navlist a[aria-current="true"]'), ol = document.getElementById("navlist");
+      if (c && ol) ol.scrollLeft = c.offsetLeft - ol.clientWidth / 2 + c.clientWidth / 2;
+    }
+    window.addEventListener("scroll", function () { if (!tk) { tk = true; requestAnimationFrame(upd); } }, { passive: true });
+    window.addEventListener("resize", upd); window.addEventListener("load", upd); window.addEventListener("pageshow", upd); setInterval(upd, 300); upd();
+  })();
+/* ---------- Tasti 0-5: vai alla sezione ---------- */
+  (function () { var a0 = document.querySelector('#navlist a[href="#s0"]'); if (a0) a0.addEventListener("click", function (e) { e.preventDefault(); window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }); }); })();
   document.addEventListener("keydown", function (e) {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     var t = e.target, tag = t && t.tagName ? t.tagName.toLowerCase() : "";
     if (tag === "input" || tag === "textarea" || tag === "select" || (t && t.isContentEditable)) return;
     var n = parseInt(e.key, 10);
-    if (!(n >= 1 && n <= PLAN.length) || String(n) !== e.key) return;
+    if (!(n >= 0 && n <= PLAN.length) || String(n) !== e.key) return;
     var el = $("s" + n); if (!el) return;
     e.preventDefault();
+    if (n === 0) { window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }); return; }
     el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
   });
 
@@ -1252,6 +1274,7 @@
   var links = Array.prototype.slice.call(document.querySelectorAll("#navlist a"));
   if ("IntersectionObserver" in window) {
     var io = new IntersectionObserver(function (es) {
+      return; /* il menu segue lo scroll (vedi sotto) */
       es.forEach(function (en) {
         if (!en.isIntersecting) return;
         links.forEach(function (a) { if (a.getAttribute("href") === "#" + en.target.id) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); });
@@ -1259,7 +1282,7 @@
         if (cur) list.scrollLeft = cur.offsetLeft - list.clientWidth / 2 + cur.clientWidth / 2;
       });
     }, { rootMargin: "-40% 0px -55% 0px" });
-    for (var s = 1; s <= PLAN.length; s++) { var se = $("s" + s); if (se) io.observe(se); }
+    for (var s = 0; s <= PLAN.length; s++) { var se = $("s" + s); if (se) io.observe(se); }
   }
 
   /* ---------- Vaso che si costruisce con le sezioni (indicatore di avanzamento) ---------- */
