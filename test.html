@@ -668,6 +668,19 @@
 .var[data-v="sla"] .lift, .var[data-v="sla"] .dn { animation-duration: 12s !important; }
 @media (min-width: 901px) { #s1 .pipe, #s1 .two { width: 70%; margin-inline: auto; } }
 @media (min-width: 901px) { #s1 .pipe .card { padding: 16px 14px; } #s1 .pipe .card p { font-size: 14px; overflow-wrap: anywhere; } }
+/* timeline piu' compatta: avatar accanto al titolo, spazi ridotti */
+.tl-ev { margin-bottom: 12px; }
+.tl-era { margin: 34px 0 14px; }
+.tl-ev .tl-year { font-size: 26px; padding-top: 10px; }
+.tl-ev .tl-node { margin-top: 20px; }
+.tl-ev .tl-slot .card, .tl-ev .tl-slot .tl-spacer { padding: 12px 16px 12px; display: grid; grid-template-columns: 42px 1fr; column-gap: 12px; align-items: center; }
+.tl-ev .tl-slot .tl-spacer { border: 1px solid transparent; }
+.tl-ev .tl-slot .tl-key { display: contents; }
+.tl-ev .tl-slot .kavatar { grid-column: 1; grid-row: 1 / span 2; }
+.tl-ev .tl-slot .chip.key { grid-column: 2; grid-row: 1; justify-self: start; margin-top: 0; }
+.tl-ev .tl-slot h4 { grid-column: 2; grid-row: 2; font-size: 20px; }
+.tl-ev .tl-slot .tl-more { grid-column: 1 / -1; grid-row: 3; margin-top: 12px; }
+.tl-ev .tl-slot .card:not(:has(.chip)) h4, .tl-ev .tl-slot .tl-spacer:not(:has(.chip)) h4 { grid-row: 1 / span 2; }
 .svg-off, .svg-off * { animation-play-state: paused !important; }
 
 .sim { display: grid; gap: 10px; align-items: center; margin-top: .8rem; }
